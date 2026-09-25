@@ -158,7 +158,7 @@
     var x = v.x * c - v.z * s;
     var z = v.x * s + v.z * c;
     var y = v.y;
-    // 透视投影（球心偏下：星球从地平线升起的构图）
+    // 透视投影（球心居中）
     var persp = 1.6;
     var scale = persp / (persp + z);
     return { x: CX + x * R * scale, y: CY + y * R * scale, z: z, s: scale };
@@ -237,7 +237,9 @@
   function frame(now) {
     ctx.clearRect(0, 0, W, H);
     R = Math.min(W, H) * 0.56;
-    CY = H * 0.5; CX = W / 2 + R; // 左缘对齐屏幕中线
+    // 修改：CX 居中，CY 垂直居中
+    CX = W / 2; 
+    CY = H / 2; 
     rot += 0.002;
 
     // 背景星点
@@ -403,8 +405,6 @@
   function resize() {
     // 逻辑尺寸用 CSS 像素（W/H 供绘制坐标系使用），
     // canvas 物理分辨率乘 dpr 保证高分屏清晰；setTransform 负责两者映射。
-    // 修复：此前 W/H 直接取物理像素，dpr>1 的高分屏上球心 (W/2, H*0.62)
-    // 会被映射到视口外右下方，地球整体"跑偏"到右下角。
     var cw = canvas.clientWidth || 0, ch = canvas.clientHeight || 0;
     if (cw < 2) cw = window.innerWidth || 2;
     if (ch < 2) ch = window.innerHeight || 2;
